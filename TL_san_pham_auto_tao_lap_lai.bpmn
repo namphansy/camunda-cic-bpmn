@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0rvfy3e" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.49.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:collaboration id="Collaboration_0timkwq">
+    <bpmn:participant id="Participant_CicProductReworkRequest" name="Luồng gửi phản hồi / yêu cầu tạo lập lại sản phẩm" processRef="Process_0k4spov" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_0k4spov" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_03o39by">
+      <bpmn:lane id="Lane_RequestChannel" name="Khách hàng / Web / H2H">
+        <bpmn:flowNodeRef>End_ReworkCompleted</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Start_ReworkRequest</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_CicProcessing">
+        <bpmn:flowNodeRef>Task_PackageCalculateFee</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ControlAndRecreateProduct</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:sequenceFlow id="Flow_0cmovch" sourceRef="Start_ReworkRequest" targetRef="Task_ControlAndRecreateProduct" />
+    <bpmn:sequenceFlow id="Flow_1wlcw47" sourceRef="Task_ControlAndRecreateProduct" targetRef="Task_PackageCalculateFee" />
+    <bpmn:serviceTask id="Task_PackageCalculateFee" name="7.1. Đóng gói, cung cấp SP và ghi nhận tạm tính phí">
+      <bpmn:incoming>Flow_1wlcw47</bpmn:incoming>
+      <bpmn:outgoing>Flow_0j54ioa</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="End_ReworkCompleted" name="Hoàn tất xử lý phản hồi">
+      <bpmn:incoming>Flow_0j54ioa</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0j54ioa" sourceRef="Task_PackageCalculateFee" targetRef="End_ReworkCompleted" />
+    <bpmn:startEvent id="Start_ReworkRequest" name="Gửi phản hồi / yêu cầu tạo lập lại">
+      <bpmn:outgoing>Flow_0cmovch</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:callActivity id="Task_ControlAndRecreateProduct" name="9. Kiểm soát và tạo lập lại sản phẩm">
+      <bpmn:extensionElements>
+        <zeebe:calledElement propagateAllChildVariables="false" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0cmovch</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wlcw47</bpmn:outgoing>
+    </bpmn:callActivity>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0timkwq">
+      <bpmndi:BPMNShape id="Participant_CicProductReworkRequest_di" bpmnElement="Participant_CicProductReworkRequest" isHorizontal="false">
+        <dc:Bounds x="132" y="80" width="938" height="620" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_RequestChannel_di" bpmnElement="Lane_RequestChannel" isHorizontal="false">
+        <dc:Bounds x="132" y="80" width="330" height="620" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_CicProcessing_di" bpmnElement="Lane_CicProcessing" isHorizontal="false">
+        <dc:Bounds x="462" y="80" width="608" height="620" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1brhsg5_di" bpmnElement="Task_PackageCalculateFee">
+        <dc:Bounds x="720" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_ReworkCompleted_di" bpmnElement="End_ReworkCompleted">
+        <dc:Bounds x="262" y="585" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="246" y="621" width="69" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_ReworkRequest_di" bpmnElement="Start_ReworkRequest">
+        <dc:Bounds x="262" y="152" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="307" y="158" width="89" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zkvah4_di" bpmnElement="Task_ControlAndRecreateProduct">
+        <dc:Bounds x="720" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0cmovch_di" bpmnElement="Flow_0cmovch">
+        <di:waypoint x="280" y="188" />
+        <di:waypoint x="280" y="214" />
+        <di:waypoint x="770" y="214" />
+        <di:waypoint x="770" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wlcw47_di" bpmnElement="Flow_1wlcw47">
+        <di:waypoint x="770" y="340" />
+        <di:waypoint x="770" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0j54ioa_di" bpmnElement="Flow_0j54ioa">
+        <di:waypoint x="770" y="500" />
+        <di:waypoint x="770" y="543" />
+        <di:waypoint x="280" y="543" />
+        <di:waypoint x="280" y="585" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

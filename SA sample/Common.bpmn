@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.47.0">
+  <bpmn:process id="Process_Automated_Main" name="Quy Trình Tạo Lập Sản Phẩm Tự Động" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Nhận Yêu Cầu (API/H2H)">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1" messageRef="Message_RequestReceived" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="SubProcess_Common1_Validation" />
+    <bpmn:callActivity id="SubProcess_Common1_Validation" name="Common 1: Validation &#38; Rejection" calledElement="SubProcess_Common1_Validation">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="SubProcess_Common1_Validation" targetRef="SubProcess_Common2_CICIdentify" />
+    <bpmn:callActivity id="SubProcess_Common2_CICIdentify" name="Common 2: CIC Code Identification" calledElement="SubProcess_Common2_CICIdentify">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="SubProcess_Common2_CICIdentify" targetRef="Gateway_CheckCIC" />
+    <bpmn:exclusiveGateway id="Gateway_CheckCIC" name="Cần chuẩn hóa thủ công?">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_NeedManual</bpmn:outgoing>
+      <bpmn:outgoing>Flow_AutoPass</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_NeedManual" name="Có" sourceRef="Gateway_CheckCIC" targetRef="UserTask_FixCIC">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${hasCicError == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="UserTask_FixCIC" name="Cán bộ CIC Chuẩn hóa Mã" camunda:candidateGroups="CIC_OFFICER_GROUP">
+      <bpmn:incoming>Flow_NeedManual</bpmn:incoming>
+      <bpmn:outgoing>Flow_4a</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_AutoPass" name="Không" sourceRef="Gateway_CheckCIC" targetRef="SubProcess_Common3_Aggregation">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${hasCicError == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_4a" sourceRef="UserTask_FixCIC" targetRef="SubProcess_Common3_Aggregation" />
+    <bpmn:callActivity id="SubProcess_Common3_Aggregation" name="Common 3: Data Aggregation Engine" calledElement="SubProcess_Common3_Aggregation" camunda:asyncBefore="true">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_AutoPass</bpmn:incoming>
+      <bpmn:incoming>Flow_4a</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="SubProcess_Common3_Aggregation" targetRef="SubProcess_Common4_Delivery" />
+    <bpmn:callActivity id="SubProcess_Common4_Delivery" name="Common 4: Packaging, Pricing &#38; Delivery" calledElement="SubProcess_Common4_Delivery">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="SubProcess_Common4_Delivery" targetRef="SubProcess_Common5_Feedback" />
+    <bpmn:callActivity id="SubProcess_Common5_Feedback" name="Common 5: Feedback &#38; Re-processing" calledElement="SubProcess_Common5_Feedback">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_End</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_End" sourceRef="SubProcess_Common5_Feedback" targetRef="EndEvent_1" />
+    <bpmn:endEvent id="EndEvent_1" name="Kết Thúc Quy Trình">
+      <bpmn:incoming>Flow_End</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_RequestReceived" name="MSG_NEW_REQUEST" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_Automated_Main">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="133" y="145" width="75" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="CallActivity_Common1_di" bpmnElement="SubProcess_Common1_Validation">
+        <dc:Bounds x="240" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="CallActivity_Common2_di" bpmnElement="SubProcess_Common2_CICIdentify">
+        <dc:Bounds x="390" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_CheckCIC_di" bpmnElement="Gateway_CheckCIC" isMarkerVisible="true">
+        <dc:Bounds x="545" y="97" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="532" y="67" width="77" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_FixCIC_di" bpmnElement="UserTask_FixCIC">
+        <dc:Bounds x="520" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="CallActivity_Common3_di" bpmnElement="SubProcess_Common3_Aggregation">
+        <dc:Bounds x="670" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="CallActivity_Common4_di" bpmnElement="SubProcess_Common4_Delivery">
+        <dc:Bounds x="820" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="CallActivity_Common5_di" bpmnElement="SubProcess_Common5_Feedback">
+        <dc:Bounds x="970" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
+        <dc:Bounds x="1122" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1114" y="145" width="52" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="188" y="120" />
+        <di:waypoint x="240" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="340" y="120" />
+        <di:waypoint x="390" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="490" y="120" />
+        <di:waypoint x="545" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_NeedManual_di" bpmnElement="Flow_NeedManual">
+        <di:waypoint x="570" y="147" />
+        <di:waypoint x="570" y="210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="578" y="176" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_AutoPass_di" bpmnElement="Flow_AutoPass">
+        <di:waypoint x="595" y="120" />
+        <di:waypoint x="670" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="617" y="102" width="32" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4a_di" bpmnElement="Flow_4a">
+        <di:waypoint x="620" y="250" />
+        <di:waypoint x="720" y="250" />
+        <di:waypoint x="720" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="770" y="120" />
+        <di:waypoint x="820" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="920" y="120" />
+        <di:waypoint x="970" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_End_di" bpmnElement="Flow_End">
+        <di:waypoint x="1070" y="120" />
+        <di:waypoint x="1122" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
