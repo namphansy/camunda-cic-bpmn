@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1e49gi9" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.49.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.24.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1e49gi9" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.49.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.24.0">
   <bpmn:collaboration id="Collaboration_18xnj35">
     <bpmn:participant id="Participant_CicCreditInquiryRequest" name="Luồng gửi yêu cầu hỏi tin" processRef="Process_0yrwvv5" />
   </bpmn:collaboration>
@@ -11,17 +11,15 @@
       </bpmn:lane>
       <bpmn:lane id="Lane_CicProcessing">
         <bpmn:flowNodeRef>Task_CheckAndIdentifyCic</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_PackageCalculateFee</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_ProductReady</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_09kgfd9</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Gateway_09kh388</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Event_1rdvb0r</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_CreateInquiryProduct</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_AggregateSubjectData</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Gateway_InquiryValid</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_ProcessInquiryFile</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_RejectInquiry</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_ReceiveAndValidateInquiry</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Boundary_RequestRejected</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_09kh388</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1rdvb0r</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PackageCalculateFee</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_RequestChannel" name="Khách hàng / Web / H2H">
         <bpmn:flowNodeRef>End_InquiryCompleted</bpmn:flowNodeRef>
@@ -39,10 +37,6 @@
       <bpmn:incoming>Flow_ProcessFile_CheckCic</bpmn:incoming>
       <bpmn:outgoing>Flow_CheckCic_NeedAdjustmentGateway</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:serviceTask id="Task_PackageCalculateFee" name="7.1. Đóng gói, cung cấp SP và ghi nhận tạm tính phí">
-      <bpmn:incoming>Flow_ProductReady_Package</bpmn:incoming>
-      <bpmn:outgoing>Flow_0htcsdz</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:parallelGateway id="Gateway_ProductReady" name="Sản phẩm đủ điều kiện cung cấp?">
       <bpmn:incoming>Flow_CreateProduct_ProductReadyGateway</bpmn:incoming>
       <bpmn:outgoing>Flow_ProductReady_Package</bpmn:outgoing>
@@ -52,15 +46,6 @@
       <bpmn:incoming>Flow_0v5r9q7</bpmn:incoming>
       <bpmn:outgoing>Flow_0qdp6xr</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="Gateway_09kh388" name="Có toàn phần ?" default="Flow_0rkm5mp">
-      <bpmn:incoming>Flow_0qdp6xr</bpmn:incoming>
-      <bpmn:outgoing>Flow_0rkm5mp</bpmn:outgoing>
-      <bpmn:outgoing>Flow_02swmwg</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:endEvent id="Event_1rdvb0r" name="Kết thúc luồng">
-      <bpmn:incoming>Flow_0rkm5mp</bpmn:incoming>
-      <bpmn:incoming>Flow_DungTraLoi_ActionEnd</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:userTask id="Activity_1ycgk3d" name="Dừng trả lời">
       <bpmn:incoming>Flow_02swmwg</bpmn:incoming>
       <bpmn:outgoing>Flow_DungTraLoi_ActionEnd</bpmn:outgoing>
@@ -97,31 +82,35 @@
     <bpmn:endEvent id="End_InquiryRejected" name="Kết thúc từ chối">
       <bpmn:incoming>Flow_Reject_End</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:exclusiveGateway id="Gateway_InquiryValid" name="Hợp lệ?" default="Flow_Invalid_Reject">
-      <bpmn:incoming>Flow_ReceiveAndValidate_ValidGateway</bpmn:incoming>
-      <bpmn:outgoing>Flow_Invalid_Reject</bpmn:outgoing>
-      <bpmn:outgoing>Flow_Valid_ProcessFile</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_Invalid_Reject" name="Không" sourceRef="Gateway_InquiryValid" targetRef="Task_RejectInquiry" />
-    <bpmn:sequenceFlow id="Flow_Valid_ProcessFile" name="Có" sourceRef="Gateway_InquiryValid" targetRef="Task_ProcessInquiryFile">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${requestValid == true}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_ReceiveAndValidate_ValidGateway" sourceRef="Task_ReceiveAndValidateInquiry" targetRef="Gateway_InquiryValid" />
-    <bpmn:serviceTask id="Task_ProcessInquiryFile" name="2.1. Xử lý file hỏi tin, bóc tách danh sách đối tượng">
-      <bpmn:incoming>Flow_Valid_ProcessFile</bpmn:incoming>
-      <bpmn:outgoing>Flow_ProcessFile_CheckCic</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_ProcessFile_CheckCic" sourceRef="Task_ProcessInquiryFile" targetRef="Task_CheckAndIdentifyCic" />
-    <bpmn:serviceTask id="Task_RejectInquiry" name="2.2. Từ chối và gửi thông báo">
-      <bpmn:incoming>Flow_Invalid_Reject</bpmn:incoming>
-      <bpmn:outgoing>Flow_Reject_End</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_Reject_End" sourceRef="Task_RejectInquiry" targetRef="End_InquiryRejected" />
-    <bpmn:serviceTask id="Task_ReceiveAndValidateInquiry" name="2. Tiếp nhận yêu cầu và kiểm tra tính hợp lệ">
+    <bpmn:sequenceFlow id="Flow_ProcessFile_CheckCic" sourceRef="Task_ReceiveAndValidateInquiry" targetRef="Task_CheckAndIdentifyCic" />
+    <bpmn:sequenceFlow id="Flow_Reject_End" sourceRef="Boundary_RequestRejected" targetRef="End_InquiryRejected" />
+    <bpmn:callActivity id="Task_ReceiveAndValidateInquiry" name="2. Tiếp nhận yêu cầu, kiểm tra hợp lệ và xử lý file" calledElement="SubProcess_Common1_Validation">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_Start_SendInquiry</bpmn:incoming>
-      <bpmn:outgoing>Flow_ReceiveAndValidate_ValidGateway</bpmn:outgoing>
-    </bpmn:serviceTask>
+      <bpmn:outgoing>Flow_ProcessFile_CheckCic</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:boundaryEvent id="Boundary_RequestRejected" name="Từ chối yêu cầu" attachedToRef="Task_ReceiveAndValidateInquiry">
+      <bpmn:outgoing>Flow_Reject_End</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEvent_RequestRejected" errorRef="Error_RequestRejected" />
+    </bpmn:boundaryEvent>
+    <bpmn:exclusiveGateway id="Gateway_09kh388" name="Có toàn phần ?" default="Flow_0rkm5mp">
+      <bpmn:incoming>Flow_0qdp6xr</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rkm5mp</bpmn:outgoing>
+      <bpmn:outgoing>Flow_02swmwg</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="Event_1rdvb0r" name="Kết thúc luồng">
+      <bpmn:incoming>Flow_0rkm5mp</bpmn:incoming>
+      <bpmn:incoming>Flow_DungTraLoi_ActionEnd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:callActivity id="Task_PackageCalculateFee" name="7.1. Đóng gói, cung cấp SP và ghi nhận tạm tính phí">
+      <bpmn:incoming>Flow_ProductReady_Package</bpmn:incoming>
+      <bpmn:outgoing>Flow_0htcsdz</bpmn:outgoing>
+    </bpmn:callActivity>
   </bpmn:process>
+  <bpmn:error id="Error_RequestRejected" name="ERROR_REQUEST_REJECTED" errorCode="ERR_REJECTED" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_18xnj35">
       <bpmndi:BPMNShape id="Participant_CicCreditInquiryRequest_di" bpmnElement="Participant_CicCreditInquiryRequest" isHorizontal="false">
@@ -143,39 +132,14 @@
           <dc:Bounds x="238" y="1216" width="84" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1dd2p7y_di" bpmnElement="Task_ProcessInquiryFile">
-        <dc:Bounds x="693" y="423" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_InquiryValid_di" bpmnElement="Gateway_InquiryValid" isMarkerVisible="true">
-        <dc:Bounds x="718" y="330" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="778" y="348" width="40" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0zu3m2w_di" bpmnElement="Task_ReceiveAndValidateInquiry">
-        <dc:Bounds x="693" y="190" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Start_InquiryRequest_di" bpmnElement="Start_InquiryRequest">
         <dc:Bounds x="292" y="140" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="353" y="146" width="78" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_03fubjh_di" bpmnElement="Task_RejectInquiry">
-        <dc:Bounds x="517" y="315" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0jw0zk3_di" bpmnElement="Task_CheckAndIdentifyCic">
         <dc:Bounds x="693" y="560" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1brhsg5_di" bpmnElement="Task_PackageCalculateFee">
-        <dc:Bounds x="692" y="1053" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="End_InquiryRejected_di" bpmnElement="End_InquiryRejected">
-        <dc:Bounds x="302" y="462" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="281" y="498" width="78" height="14" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0ba6m44_di" bpmnElement="Gateway_ProductReady">
         <dc:Bounds x="950" y="910" width="50" height="50" />
@@ -186,18 +150,6 @@
       <bpmndi:BPMNShape id="BPMNShape_0clg1fo" bpmnElement="Activity_09kgfd9">
         <dc:Bounds x="1080" y="895" width="100" height="80" />
         <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_09s9k25" bpmnElement="Gateway_09kh388" isMarkerVisible="true">
-        <dc:Bounds x="1065" y="1035" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1002" y="1083" width="76" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1rdvb0r_di" bpmnElement="Event_1rdvb0r">
-        <dc:Bounds x="1072" y="1142" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1055" y="1185" width="71" height="14" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1ycgk3d_di" bpmnElement="Activity_1ycgk3d">
         <dc:Bounds x="1330" y="1020" width="100" height="80" />
@@ -210,10 +162,41 @@
         <dc:Bounds x="693" y="720" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_InquiryRejected_di" bpmnElement="End_InquiryRejected">
+        <dc:Bounds x="302" y="462" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="281" y="498" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zu3m2w_di" bpmnElement="Task_ReceiveAndValidateInquiry">
+        <dc:Bounds x="693" y="320" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_09s9k25" bpmnElement="Gateway_09kh388" isMarkerVisible="true">
+        <dc:Bounds x="1105" y="1035" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1042" y="1083" width="76" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1rdvb0r_di" bpmnElement="Event_1rdvb0r">
+        <dc:Bounds x="1112" y="1142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1095" y="1185" width="71" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1kky6th_di" bpmnElement="Task_PackageCalculateFee">
+        <dc:Bounds x="692" y="1053" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Boundary_DungTraLoiTimeout_di" bpmnElement="Boundary_DungTraLoiTimeout">
         <dc:Bounds x="1372" y="1002" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1406" y="993" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Boundary_RequestRejected_di" bpmnElement="Boundary_RequestRejected">
+        <dc:Bounds x="675" y="382" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="634" y="419" width="79" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0htcsdz_di" bpmnElement="Flow_0htcsdz">
@@ -221,38 +204,11 @@
         <di:waypoint x="280" y="1093" />
         <di:waypoint x="280" y="1180" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_Valid_ProcessFile_di" bpmnElement="Flow_Valid_ProcessFile">
-        <di:waypoint x="743" y="380" />
-        <di:waypoint x="743" y="423" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="753" y="379" width="15" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_ProcessFile_CheckCic_di" bpmnElement="Flow_ProcessFile_CheckCic">
-        <di:waypoint x="743" y="503" />
-        <di:waypoint x="743" y="560" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_ReceiveAndValidate_ValidGateway_di" bpmnElement="Flow_ReceiveAndValidate_ValidGateway">
-        <di:waypoint x="743" y="270" />
-        <di:waypoint x="743" y="330" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_Invalid_Reject_di" bpmnElement="Flow_Invalid_Reject">
-        <di:waypoint x="718" y="355" />
-        <di:waypoint x="617" y="355" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="654" y="330" width="32" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_Start_SendInquiry_di" bpmnElement="Flow_Start_SendInquiry">
         <di:waypoint x="310" y="176" />
-        <di:waypoint x="310" y="228" />
-        <di:waypoint x="693" y="228" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_Reject_End_di" bpmnElement="Flow_Reject_End">
-        <di:waypoint x="567" y="395" />
-        <di:waypoint x="567" y="430" />
-        <di:waypoint x="320" y="430" />
-        <di:waypoint x="320" y="462" />
+        <di:waypoint x="310" y="260" />
+        <di:waypoint x="743" y="260" />
+        <di:waypoint x="743" y="320" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_CheckCic_NeedAdjustmentGateway_di" bpmnElement="Flow_CheckCic_NeedAdjustmentGateway">
         <di:waypoint x="743" y="640" />
@@ -262,7 +218,7 @@
         <di:waypoint x="975" y="960" />
         <di:waypoint x="975" y="1015" />
         <di:waypoint x="742" y="1015" />
-        <di:waypoint x="742" y="1050" />
+        <di:waypoint x="742" y="1053" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="851" y="990" width="15" height="14" />
         </bpmndi:BPMNLabel>
@@ -277,30 +233,28 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0qdp6xr_di" bpmnElement="Flow_0qdp6xr">
         <di:waypoint x="1130" y="975" />
-        <di:waypoint x="1130" y="1005" />
-        <di:waypoint x="1090" y="1005" />
-        <di:waypoint x="1090" y="1035" />
+        <di:waypoint x="1130" y="1035" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0rkm5mp_di" bpmnElement="Flow_0rkm5mp">
-        <di:waypoint x="1090" y="1085" />
-        <di:waypoint x="1090" y="1142" />
+        <di:waypoint x="1130" y="1085" />
+        <di:waypoint x="1130" y="1142" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1100" y="1107" width="15" height="14" />
+          <dc:Bounds x="1140" y="1107" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_02swmwg_di" bpmnElement="Flow_02swmwg">
-        <di:waypoint x="1115" y="1060" />
+        <di:waypoint x="1155" y="1060" />
         <di:waypoint x="1330" y="1060" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1214" y="1042" width="32" height="14" />
+          <dc:Bounds x="1233" y="1042" width="32" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_DungTraLoi_ActionEnd_di" bpmnElement="Flow_DungTraLoi_ActionEnd">
         <di:waypoint x="1380" y="1100" />
         <di:waypoint x="1380" y="1160" />
-        <di:waypoint x="1110" y="1160" />
+        <di:waypoint x="1148" y="1160" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1154" y="1135" width="47" height="14" />
+          <dc:Bounds x="1182" y="1135" width="47" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_AggregateSubject_CreateProduct_di" bpmnElement="Flow_AggregateSubject_CreateProduct">
@@ -311,6 +265,15 @@
         <di:waypoint x="1390" y="1002" />
         <di:waypoint x="1390" y="765" />
         <di:waypoint x="793" y="765" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ProcessFile_CheckCic_di" bpmnElement="Flow_ProcessFile_CheckCic">
+        <di:waypoint x="743" y="400" />
+        <di:waypoint x="743" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Reject_End_di" bpmnElement="Flow_Reject_End">
+        <di:waypoint x="693" y="418" />
+        <di:waypoint x="693" y="480" />
+        <di:waypoint x="338" y="480" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
