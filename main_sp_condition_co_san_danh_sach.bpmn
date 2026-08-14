@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0wry2qq" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.49.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.24.0">
+  <bpmn:collaboration id="Collaboration_0qe2nbl">
+    <bpmn:participant id="Participant_HoiTinDieuKien" name="Quy trình Tạo lập và cung cấp sản phẩm theo yêu cầu thủ công (theo điều kiện)" processRef="Process_1b61wfi" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_1b61wfi" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_1eu4a03">
+      <bpmn:lane id="Lane_DonViHoiTin" name="Đơn vị hỏi tin">
+        <bpmn:flowNodeRef>End_KhongPhanHoi</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_CICCore">
+        <bpmn:flowNodeRef>Task_8_1_DongGoiCungCapSanPham</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_CanBoCIC" name="Cán bộ CIC">
+        <bpmn:flowNodeRef>Event_0m33x3y</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:callActivity id="Task_8_1_DongGoiCungCapSanPham" name="8.1. Đóng gói, cung cấp SP &#38; gửi phản mềm tính phí">
+      <bpmn:incoming>Flow_0shstq0</bpmn:incoming>
+      <bpmn:outgoing>Flow_1aw6544</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:startEvent id="Event_0m33x3y" name="cic chọn Chỉ tạo danh sách">
+      <bpmn:outgoing>Flow_0shstq0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="End_KhongPhanHoi">
+      <bpmn:incoming>Flow_1aw6544</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0shstq0" sourceRef="Event_0m33x3y" targetRef="Task_8_1_DongGoiCungCapSanPham" />
+    <bpmn:sequenceFlow id="Flow_1aw6544" sourceRef="Task_8_1_DongGoiCungCapSanPham" targetRef="End_KhongPhanHoi" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0qe2nbl">
+      <bpmndi:BPMNShape id="Participant_HoiTinDieuKien_di" bpmnElement="Participant_HoiTinDieuKien" isHorizontal="false">
+        <dc:Bounds x="160" y="80" width="1000" height="450" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_CanBoCIC_di" bpmnElement="Lane_CanBoCIC" isHorizontal="false" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
+        <dc:Bounds x="782" y="80" width="378" height="450" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_CICCore_di" bpmnElement="Lane_CICCore" isHorizontal="false" bioc:stroke="#205022" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#205022">
+        <dc:Bounds x="462" y="80" width="320" height="450" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_DonViHoiTin_di" bpmnElement="Lane_DonViHoiTin" isHorizontal="false" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
+        <dc:Bounds x="160" y="80" width="302" height="450" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_8_1_DongGoiCungCapSanPham_di" bpmnElement="Task_8_1_DongGoiCungCapSanPham">
+        <dc:Bounds x="527" y="240" width="190" height="110" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0iefkau" bpmnElement="Event_0m33x3y">
+        <dc:Bounds x="954" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="933" y="195" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_KhongPhanHoi_di" bpmnElement="End_KhongPhanHoi">
+        <dc:Bounds x="282" y="277" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0shstq0_di" bpmnElement="Flow_0shstq0">
+        <di:waypoint x="972" y="268" />
+        <di:waypoint x="972" y="300" />
+        <di:waypoint x="717" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1aw6544_di" bpmnElement="Flow_1aw6544">
+        <di:waypoint x="527" y="295" />
+        <di:waypoint x="318" y="295" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_HoiTinDieuKien" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.49.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:collaboration id="Collaboration_HoiTinDieuKien">
+    <bpmn:participant id="Participant_HoiTinDieuKien" name="Quy trình Tạo lập và cung cấp sản phẩm theo yêu cầu thủ công (theo điều kiện)" processRef="Process_HoiTinDieuKien" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_HoiTinDieuKien" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_HoiTinDieuKien">
+      <bpmn:lane id="Lane_DonViHoiTin" name="Đơn vị hỏi tin">
+        <bpmn:flowNodeRef>End_KhongPhanHoi</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_CICCore">
+        <bpmn:flowNodeRef>Task_8_1_DongGoiCungCapSanPham</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_5_TongHopDuLieuTheoDoiTuong</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_6_TongHopDuLieuTaoLapSanPham</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_CanBoCIC" name="Cán bộ CIC">
+        <bpmn:flowNodeRef>Gateway_KetQuaTest</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_7_2_DieuChinhCongThucCauHinh</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_4_2_ChonChiTieuMauBaoCao</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0zlsqjd</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_7_1_KiemTraKetQuaTaoLap</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:exclusiveGateway id="Gateway_KetQuaTest" name="Kết quả test" default="Flow_KetQuaTest_Failed_Task7_2">
+      <bpmn:incoming>Flow_Task7_1_GatewayKetQuaTest</bpmn:incoming>
+      <bpmn:outgoing>Flow_KetQuaTest_Passed_Task8_1</bpmn:outgoing>
+      <bpmn:outgoing>Flow_KetQuaTest_Failed_Task7_2</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:callActivity id="Task_8_1_DongGoiCungCapSanPham" name="8.1. Đóng gói, cung cấp SP &#38; gửi phản mềm tính phí">
+      <bpmn:incoming>Flow_KetQuaTest_Passed_Task8_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_13dk4u3</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:userTask id="Task_7_2_DieuChinhCongThucCauHinh" name="7.2. Điều chỉnh lại công thức và cấu hình sản phẩm">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_Task5_Task7_2</bpmn:incoming>
+      <bpmn:incoming>Flow_KetQuaTest_Failed_Task7_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_Task7_2_Task4_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:callActivity id="Task_5_TongHopDuLieuTheoDoiTuong" name="5. Tổng hợp dữ liệu theo từng đối tượng được hỏi tin">
+      <bpmn:incoming>Flow_Task4_2_Task5</bpmn:incoming>
+      <bpmn:outgoing>Flow_Task5_Task6</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Task5_Task7_2</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:userTask id="Task_4_2_ChonChiTieuMauBaoCao" name="4.2. Chọn chỉ tiêu, mẫu báo cáo &#38; Bấm thực hiện tạo lập SP">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_Task7_2_Task4_2</bpmn:incoming>
+      <bpmn:incoming>Flow_1vq44so</bpmn:incoming>
+      <bpmn:outgoing>Flow_Task4_2_Task5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="Event_0zlsqjd" name="Bổ sung chi tiêu">
+      <bpmn:outgoing>Flow_1vq44so</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_Task5_Task6" sourceRef="Task_5_TongHopDuLieuTheoDoiTuong" targetRef="Task_6_TongHopDuLieuTaoLapSanPham" />
+    <bpmn:sequenceFlow id="Flow_Task6_Task7_1" sourceRef="Task_6_TongHopDuLieuTaoLapSanPham" targetRef="Task_7_1_KiemTraKetQuaTaoLap" />
+    <bpmn:sequenceFlow id="Flow_Task7_1_GatewayKetQuaTest" sourceRef="Task_7_1_KiemTraKetQuaTaoLap" targetRef="Gateway_KetQuaTest" />
+    <bpmn:sequenceFlow id="Flow_KetQuaTest_Failed_Task7_2" name="Failed" sourceRef="Gateway_KetQuaTest" targetRef="Task_7_2_DieuChinhCongThucCauHinh" />
+    <bpmn:sequenceFlow id="Flow_KetQuaTest_Passed_Task8_1" name="Passed" sourceRef="Gateway_KetQuaTest" targetRef="Task_8_1_DongGoiCungCapSanPham">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${ketQuaTest == "passed"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Task5_Task7_2" name="Lỗi" sourceRef="Task_5_TongHopDuLieuTheoDoiTuong" targetRef="Task_7_2_DieuChinhCongThucCauHinh" />
+    <bpmn:sequenceFlow id="Flow_Task7_2_Task4_2" sourceRef="Task_7_2_DieuChinhCongThucCauHinh" targetRef="Task_4_2_ChonChiTieuMauBaoCao" />
+    <bpmn:sequenceFlow id="Flow_Task4_2_Task5" sourceRef="Task_4_2_ChonChiTieuMauBaoCao" targetRef="Task_5_TongHopDuLieuTheoDoiTuong" />
+    <bpmn:sequenceFlow id="Flow_1vq44so" sourceRef="Event_0zlsqjd" targetRef="Task_4_2_ChonChiTieuMauBaoCao" />
+    <bpmn:sequenceFlow id="Flow_13dk4u3" sourceRef="Task_8_1_DongGoiCungCapSanPham" targetRef="End_KhongPhanHoi" />
+    <bpmn:endEvent id="End_KhongPhanHoi">
+      <bpmn:incoming>Flow_13dk4u3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:callActivity id="Task_6_TongHopDuLieuTaoLapSanPham" name="6. Tổng hợp dữ liệu các ĐTHT và Tạo lập sản phẩm">
+      <bpmn:incoming>Flow_Task5_Task6</bpmn:incoming>
+      <bpmn:outgoing>Flow_Task6_Task7_1</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:userTask id="Task_7_1_KiemTraKetQuaTaoLap" name="7.1. Kiểm tra kết quả tạo lập">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_Task6_Task7_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_Task7_1_GatewayKetQuaTest</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_HoiTinDieuKien">
+    <bpmndi:BPMNPlane id="BPMNPlane_HoiTinDieuKien" bpmnElement="Collaboration_HoiTinDieuKien">
+      <bpmndi:BPMNShape id="Participant_HoiTinDieuKien_di" bpmnElement="Participant_HoiTinDieuKien" isHorizontal="false">
+        <dc:Bounds x="160" y="80" width="1390" height="1080" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_CanBoCIC_di" bpmnElement="Lane_CanBoCIC" isHorizontal="false" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
+        <dc:Bounds x="860" y="80" width="690" height="1080" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_CICCore_di" bpmnElement="Lane_CICCore" isHorizontal="false" bioc:stroke="#205022" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#205022">
+        <dc:Bounds x="540" y="80" width="320" height="1080" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_DonViHoiTin_di" bpmnElement="Lane_DonViHoiTin" isHorizontal="false" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
+        <dc:Bounds x="160" y="80" width="380" height="1080" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_KetQuaTest_di" bpmnElement="Gateway_KetQuaTest" isMarkerVisible="true" bioc:stroke="#b85450" bioc:fill="#f8cecc">
+        <dc:Bounds x="990" y="810" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="986" y="860" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_8_1_DongGoiCungCapSanPham_di" bpmnElement="Task_8_1_DongGoiCungCapSanPham">
+        <dc:Bounds x="605" y="970" width="190" height="110" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_17nrhox_di" bpmnElement="Task_7_2_DieuChinhCongThucCauHinh" bioc:stroke="#b85450" bioc:fill="#f8cecc">
+        <dc:Bounds x="965" y="470" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_5_TongHopDuLieuTheoDoiTuong_di" bpmnElement="Task_5_TongHopDuLieuTheoDoiTuong">
+        <dc:Bounds x="605" y="295" width="190" height="110" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0tx7jm8_di" bpmnElement="Task_4_2_ChonChiTieuMauBaoCao" bioc:stroke="#d79b00" bioc:fill="#fff2cc">
+        <dc:Bounds x="1170" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_028lorv" bpmnElement="Event_0zlsqjd">
+        <dc:Bounds x="1202" y="202" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1181" y="165" width="79" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_KhongPhanHoi_di" bpmnElement="End_KhongPhanHoi">
+        <dc:Bounds x="342" y="1092" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_6_TongHopDuLieuTaoLapSanPham_di" bpmnElement="Task_6_TongHopDuLieuTaoLapSanPham">
+        <dc:Bounds x="605" y="650" width="190" height="105" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dqk83s_di" bpmnElement="Task_7_1_KiemTraKetQuaTaoLap" bioc:stroke="#b85450" bioc:fill="#f8cecc">
+        <dc:Bounds x="965" y="663" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_Task5_Task6_di" bpmnElement="Flow_Task5_Task6">
+        <di:waypoint x="700" y="405" />
+        <di:waypoint x="700" y="650" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Task6_Task7_1_di" bpmnElement="Flow_Task6_Task7_1">
+        <di:waypoint x="795" y="704" />
+        <di:waypoint x="965" y="705" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Task7_1_GatewayKetQuaTest_di" bpmnElement="Flow_Task7_1_GatewayKetQuaTest">
+        <di:waypoint x="1015" y="743" />
+        <di:waypoint x="1015" y="810" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_KetQuaTest_Failed_Task7_2_di" bpmnElement="Flow_KetQuaTest_Failed_Task7_2">
+        <di:waypoint x="1040" y="835" />
+        <di:waypoint x="1180" y="835" />
+        <di:waypoint x="1180" y="530" />
+        <di:waypoint x="1065" y="530" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1135" y="673" width="30" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_KetQuaTest_Passed_Task8_1_di" bpmnElement="Flow_KetQuaTest_Passed_Task8_1">
+        <di:waypoint x="990" y="835" />
+        <di:waypoint x="700" y="835" />
+        <di:waypoint x="700" y="970" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="811" y="810" width="37" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Task5_Task7_2_di" bpmnElement="Flow_Task5_Task7_2">
+        <di:waypoint x="795" y="385" />
+        <di:waypoint x="840" y="385" />
+        <di:waypoint x="840" y="510" />
+        <di:waypoint x="965" y="510" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="886" y="489" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Task7_2_Task4_2_di" bpmnElement="Flow_Task7_2_Task4_2">
+        <di:waypoint x="1065" y="512" />
+        <di:waypoint x="1225" y="512" />
+        <di:waypoint x="1225" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Task4_2_Task5_di" bpmnElement="Flow_Task4_2_Task5">
+        <di:waypoint x="1170" y="343" />
+        <di:waypoint x="795" y="343" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vq44so_di" bpmnElement="Flow_1vq44so">
+        <di:waypoint x="1220" y="238" />
+        <di:waypoint x="1220" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13dk4u3_di" bpmnElement="Flow_13dk4u3">
+        <di:waypoint x="605" y="1010" />
+        <di:waypoint x="360" y="1010" />
+        <di:waypoint x="360" y="1092" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

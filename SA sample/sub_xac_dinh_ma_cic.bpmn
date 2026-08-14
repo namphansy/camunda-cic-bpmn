@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI" 
+                  xmlns:camunda="http://camunda.org/schema/1.0/bpmn" 
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                  id="Definitions_Common2" 
+                  targetNamespace="http://bpmn.io/schema/bpmn" 
+                  exporter="Camunda Modeler" 
+                  exporterVersion="5.x">
+
+  <bpmn:process id="SubProcess_Common2_CICIdentify" name="Common 2: Tra cứu và Gán Mã CIC" isExecutable="true">
+    
+    <bpmn:startEvent id="Start_Common2" name="Start CIC Identify">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <bpmn:serviceTask id="Task_LookupCIC" name="Xác định Mã CIC ĐTĐHT" camunda:delegateExpression="${lookupCicCodeDelegate}">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:exclusiveGateway id="Gateway_HasCIC" name="Đã có Mã CIC chuẩn?">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_HasCIC_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_HasCIC_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:userTask id="UserTask_RequestFix" name="Cán bộ Chuẩn hóa Dữ liệu" camunda:candidateGroups="CIC_OFFICER_GROUP">
+      <bpmn:incoming>Flow_HasCIC_No</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:serviceTask id="Task_AssignTempCode" name="Gán Mã Tạm / Mã CIC Mới" camunda:delegateExpression="${assignTempCicCodeDelegate}">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_To_End</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:endEvent id="End_CICSuccess" name="Xác định Mã CIC Thành công">
+      <bpmn:incoming>Flow_HasCIC_Yes</bpmn:incoming>
+      <bpmn:incoming>Flow_To_End</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="Start_Common2" targetRef="Task_LookupCIC" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_LookupCIC" targetRef="Gateway_HasCIC" />
+    <bpmn:sequenceFlow id="Flow_HasCIC_Yes" name="Có" sourceRef="Gateway_HasCIC" targetRef="End_CICSuccess">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${hasValidCicCode == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_HasCIC_No" name="Chưa/Lỗi" sourceRef="Gateway_HasCIC" targetRef="UserTask_RequestFix">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${hasValidCicCode == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="UserTask_RequestFix" targetRef="Task_AssignTempCode" />
+    <bpmn:sequenceFlow id="Flow_To_End" sourceRef="Task_AssignTempCode" targetRef="End_CICSuccess" />
+
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Common2">
+    <bpmndi:BPMNPlane id="BPMNPlane_Common2" bpmnElement="SubProcess_Common2_CICIdentify">
+      <bpmndi:BPMNShape id="Start_Common2_di" bpmnElement="Start_Common2">
+        <dc:Bounds x="152" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_LookupCIC_di" bpmnElement="Task_LookupCIC">
+        <dc:Bounds x="240" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_HasCIC_di" bpmnElement="Gateway_HasCIC" isMarkerVisible="true">
+        <dc:Bounds x="395" y="97" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_RequestFix_di" bpmnElement="UserTask_RequestFix">
+        <dc:Bounds x="370" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_AssignTempCode_di" bpmnElement="Task_AssignTempCode">
+        <dc:Bounds x="520" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_CICSuccess_di" bpmnElement="End_CICSuccess">
+        <dc:Bounds x="672" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1"><di:waypoint x="188" y="120" /><di:waypoint x="240" y="120" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2"><di:waypoint x="340" y="120" /><di:waypoint x="395" y="120" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_HasCIC_Yes_di" bpmnElement="Flow_HasCIC_Yes"><di:waypoint x="445" y="120" /><di:waypoint x="672" y="120" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_HasCIC_No_di" bpmnElement="Flow_HasCIC_No"><di:waypoint x="420" y="147" /><di:waypoint x="420" y="210" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3"><di:waypoint x="470" y="250" /><di:waypoint x="520" y="250" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_To_End_di" bpmnElement="Flow_To_End"><di:waypoint x="620" y="250" /><di:waypoint x="690" y="250" /><di:waypoint x="690" y="138" /></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

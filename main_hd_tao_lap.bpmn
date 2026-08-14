@@ -10,6 +10,22 @@
     </bpmn:textAnnotation>
     <bpmn:association id="Association_TrienKhaiH2H" sourceRef="Task_TrienKhaiKenhHopDongH2H" targetRef="TextAnnotation_TrienKhaiH2H" />
     <bpmn:association id="Association_PTTPM_NCPT" sourceRef="Task_3_1_DanhGiaKhaNangTaoLapSanPham" targetRef="TextAnnotation_PTTPM_NCPT" />
+    <bpmn:textAnnotation id="TextAnnotation_1bkcctn">
+      <bpmn:text>proposal-contract-service</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_03nikuy" associationDirection="None" sourceRef="Task_2a_TiepNhanYeuCauDeXuat" targetRef="TextAnnotation_1bkcctn" />
+    <bpmn:textAnnotation id="TextAnnotation_0pvd3o5">
+      <bpmn:text>proposal-contract-service</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1v1td9p" associationDirection="None" sourceRef="Task_2b_TraoDoiDVHTChinhSuaDeXuat" targetRef="TextAnnotation_0pvd3o5" />
+    <bpmn:textAnnotation id="TextAnnotation_0wqlla7">
+      <bpmn:text>proposal-contract-service</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0pjl98p" associationDirection="None" sourceRef="Activity_1otv2ry" targetRef="TextAnnotation_0wqlla7" />
+    <bpmn:textAnnotation id="TextAnnotation_0sra9j7">
+      <bpmn:text>contact-service</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0ni8m5l" associationDirection="None" sourceRef="Task_4_KyHopDong" targetRef="TextAnnotation_0sra9j7" />
   </bpmn:collaboration>
   <bpmn:process id="Process_1rtnioa" isExecutable="true">
     <bpmn:laneSet id="LaneSet_18a6i6s">
@@ -133,7 +149,7 @@
       <bpmndi:BPMNShape id="Lane_PhongNghiepVu_di" bpmnElement="Lane_PhongNghiepVu" isHorizontal="false" bioc:stroke="#205022" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#205022">
         <dc:Bounds x="510" y="80" width="520" height="1280" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_LienQuan_di" bpmnElement="Lane_LienQuan" isHorizontal="false" bioc:stroke="#0d4372" bioc:fill="#bbdefb" color:background-color="#bbdefb" color:border-color="#0d4372">
+      <bpmndi:BPMNShape id="Lane_LienQuan_di" bpmnElement="Lane_LienQuan" isHorizontal="false" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
         <dc:Bounds x="1030" y="80" width="520" height="1280" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_HDDV5_di" bpmnElement="Gateway_HDDV5" isMarkerVisible="true">
@@ -160,10 +176,6 @@
           <dc:Bounds x="655" y="838" width="90" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1obsb4m" bpmnElement="Activity_1mnkwbk">
-        <dc:Bounds x="855" y="710" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1kxi3fp_di" bpmnElement="Task_3_2_TuChoiGuiThongBao">
         <dc:Bounds x="620" y="1130" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -175,10 +187,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_03nbxav_di" bpmnElement="Task_3_1_DanhGiaKhaNangTaoLapSanPham">
         <dc:Bounds x="1240" y="840" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1841rt9" bpmnElement="Activity_1otv2ry">
-        <dc:Bounds x="855" y="530" width="100" height="80" />
-        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1jtprkc_di" bpmnElement="Task_4_KyHopDong">
         <dc:Bounds x="825" y="1070" width="100" height="80" />
@@ -194,6 +202,14 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0l54i08_di" bpmnElement="Task_TrienKhaiKenhHopDongH2H">
         <dc:Bounds x="1205" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1obsb4m" bpmnElement="Activity_1mnkwbk">
+        <dc:Bounds x="855" y="710" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1841rt9" bpmnElement="Activity_1otv2ry">
+        <dc:Bounds x="855" y="530" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_Task2a_GatewayHDDV5_di" bpmnElement="Flow_Task2a_GatewayHDDV5">
         <di:waypoint x="810" y="325" />
@@ -302,6 +318,22 @@
         <di:waypoint x="283" y="1280" />
         <di:waypoint x="283" y="1188" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_03nikuy_di" bpmnElement="Association_03nikuy">
+        <di:waypoint x="711" y="293" />
+        <di:waypoint x="691" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1v1td9p_di" bpmnElement="Association_1v1td9p">
+        <di:waypoint x="705" y="462" />
+        <di:waypoint x="659" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0pjl98p_di" bpmnElement="Association_0pjl98p">
+        <di:waypoint x="955" y="570" />
+        <di:waypoint x="1050" y="570" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0ni8m5l_di" bpmnElement="Association_0ni8m5l">
+        <di:waypoint x="925" y="1110" />
+        <di:waypoint x="1050" y="1110" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_TrienKhaiH2H_di" bpmnElement="TextAnnotation_TrienKhaiH2H">
         <dc:Bounds x="1405" y="390" width="125" height="140" />
       </bpmndi:BPMNShape>
@@ -316,6 +348,22 @@
         <di:waypoint x="1340" y="882" />
         <di:waypoint x="1410" y="860" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_1bkcctn_di" bpmnElement="TextAnnotation_1bkcctn">
+        <dc:Bounds x="520" y="240" width="192" height="40" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0pvd3o5_di" bpmnElement="TextAnnotation_0pvd3o5">
+        <dc:Bounds x="566" y="400" width="164" height="40" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0wqlla7_di" bpmnElement="TextAnnotation_0wqlla7">
+        <dc:Bounds x="1050" y="550" width="150" height="40" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0sra9j7_di" bpmnElement="TextAnnotation_0sra9j7">
+        <dc:Bounds x="1050" y="1090" width="102" height="40" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

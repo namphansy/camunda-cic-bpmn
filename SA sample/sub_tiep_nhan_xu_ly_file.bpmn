@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI" 
+                  xmlns:camunda="http://camunda.org/schema/1.0/bpmn" 
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                  id="Definitions_Common1" 
+                  targetNamespace="http://bpmn.io/schema/bpmn" 
+                  exporter="Camunda Modeler" 
+                  exporterVersion="5.x">
+
+  <bpmn:process id="SubProcess_Common1_Validation" name="Common 1: Tiếp nhận và Kiểm tra Hợp lệ" isExecutable="true">
+    
+    <bpmn:startEvent id="Start_Common1" name="Start Validation">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <bpmn:serviceTask id="Task_CheckValid" name="Kiểm tra hợp lệ Yêu cầu" camunda:delegateExpression="${validateRequestDelegate}">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:exclusiveGateway id="Gateway_Valid" name="Hợp lệ?">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_Valid_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Valid_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:serviceTask id="Task_RejectNotice" name="Gửi thông báo Từ chối" camunda:delegateExpression="${sendRejectNotificationDelegate}">
+      <bpmn:incoming>Flow_Valid_No</bpmn:incoming>
+      <bpmn:outgoing>Flow_To_EndReject</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:endEvent id="End_Rejected" name="Từ chối Yêu cầu">
+      <bpmn:incoming>Flow_To_EndReject</bpmn:incoming>
+      <bpmn:errorEventDefinition id="ErrorEvent_1" errorRef="Error_RequestRejected" />
+    </bpmn:endEvent>
+
+    <bpmn:serviceTask id="Task_ParseFile" name="Bóc tách Danh sách Đối tượng" camunda:delegateExpression="${parseRequestFileDelegate}">
+      <bpmn:incoming>Flow_Valid_Yes</bpmn:incoming>
+      <bpmn:outgoing>Flow_To_EndSuccess</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:endEvent id="End_ValidSuccess" name="Hợp lệ thành công">
+      <bpmn:incoming>Flow_To_EndSuccess</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="Start_Common1" targetRef="Task_CheckValid" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_CheckValid" targetRef="Gateway_Valid" />
+    <bpmn:sequenceFlow id="Flow_Valid_Yes" name="Có" sourceRef="Gateway_Valid" targetRef="Task_ParseFile">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isValid == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Valid_No" name="Không" sourceRef="Gateway_Valid" targetRef="Task_RejectNotice">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isValid == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_To_EndReject" sourceRef="Task_RejectNotice" targetRef="End_Rejected" />
+    <bpmn:sequenceFlow id="Flow_To_EndSuccess" sourceRef="Task_ParseFile" targetRef="End_ValidSuccess" />
+
+  </bpmn:process>
+
+  <bpmn:error id="Error_RequestRejected" name="ERROR_REQUEST_REJECTED" errorCode="ERR_REJECTED" />
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Common1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Common1" bpmnElement="SubProcess_Common1_Validation">
+      <bpmndi:BPMNShape id="Start_Common1_di" bpmnElement="Start_Common1">
+        <dc:Bounds x="152" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_CheckValid_di" bpmnElement="Task_CheckValid">
+        <dc:Bounds x="240" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Valid_di" bpmnElement="Gateway_Valid" isMarkerVisible="true">
+        <dc:Bounds x="395" y="97" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_RejectNotice_di" bpmnElement="Task_RejectNotice">
+        <dc:Bounds x="370" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Rejected_di" bpmnElement="End_Rejected">
+        <dc:Bounds x="402" y="332" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ParseFile_di" bpmnElement="Task_ParseFile">
+        <dc:Bounds x="510" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_ValidSuccess_di" bpmnElement="End_ValidSuccess">
+        <dc:Bounds x="672" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1"><di:waypoint x="188" y="120" /><di:waypoint x="240" y="120" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2"><di:waypoint x="340" y="120" /><di:waypoint x="395" y="120" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Valid_Yes_di" bpmnElement="Flow_Valid_Yes"><di:waypoint x="445" y="120" /><di:waypoint x="510" y="120" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Valid_No_di" bpmnElement="Flow_Valid_No"><di:waypoint x="420" y="147" /><di:waypoint x="420" y="210" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_To_EndReject_di" bpmnElement="Flow_To_EndReject"><di:waypoint x="420" y="290" /><di:waypoint x="420" y="332" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_To_EndSuccess_di" bpmnElement="Flow_To_EndSuccess"><di:waypoint x="610" y="120" /><di:waypoint x="672" y="120" /></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
